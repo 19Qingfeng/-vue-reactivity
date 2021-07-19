@@ -3,4 +3,4 @@ export {
   shallowReadonly,
   readonly,
   reactive,
-} from './reacitve';
+} from './reactive';

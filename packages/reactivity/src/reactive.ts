@@ -45,7 +45,7 @@ export function createReactiveObject(
   proxyMap: WeakMap<object, any>
 ) {
   // 保证target必须是对象
-  if (isPlainObject(target)) {
+  if (!isPlainObject(target)) {
     console.warn(`${target} must be object can reactive or readonly`);
     return target;
   }
@@ -56,8 +56,10 @@ export function createReactiveObject(
     return target;
   }
 
+  // proxy API 仅仅代理对象的一层 嵌套对象需要递归处理 这也就是vue3的懒代理模式
+  // getters 触发时候才会递归相应属性进行reactive/readonly
   const proxy = new Proxy(target, baseHandler);
-  proxy.set(target);
+  proxyMap.set(target, proxy);
 
   return proxy;
 }
