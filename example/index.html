@@ -14,34 +14,26 @@
 
   </script>
   <script>
-    // const {
-    //   reactive,
-    //   readonly,
-    //   shallowReactive,
-    //   shallowReadonly,
-    //   effect
-    // } = reactivity
-    // const obj = {
-    //   value: '19Qingfeng',
-    //   outer: {
-    //     inner: 'wangHaoyu'
-    //   }
-    // }
-    // const obj1 = reactive(obj)
-    // effect(() => {
-    //   document.getElementById('app').innerHTML = obj1.value
-    // })
-
-    const proxy = new Proxy({
-      a: 1
-    }, {
-      get(target, key) {
-        console.log('访问' + key)
-        return target[key]
+    const {
+      reactive,
+      readonly,
+      shallowReactive,
+      shallowReadonly,
+      effect
+    } = reactivity
+    const obj = {
+      value: '19Qingfeng',
+      outer: {
+        inner: 'wangHaoyu'
       }
+    }
+    const obj1 = reactive(obj)
+    effect(() => {
+      document.getElementById('app').innerHTML = obj1.value
     })
-    console.log(proxy.a++)
-    console.log('1')
+    effect(() => {
+      document.getElementById('app').innerHTML = obj1.value
+    })
   </script>
 </body>
 

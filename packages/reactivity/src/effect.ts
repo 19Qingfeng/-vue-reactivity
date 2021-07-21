@@ -40,16 +40,38 @@ function createReactiveEffect(fn: () => void, options: EffectOptions) {
   };
 
   reactiveEffect.uid = uid++;
-  reactiveEffect._isEffect = true;
-  reactiveEffect._raw = fn;
+  reactiveEffect._isEffect = true; // 当前是否是effect
+  reactiveEffect._raw = fn; // 原函数
   reactiveEffect._options = options;
 
   return reactiveEffect;
 }
 
+// 保存相关依赖收集
+/* 
+    weakMap相关内容
+      {
+        { key:1 }: { 1: <effect>Set }
+      }
+*/
+const weakMap = new WeakMap()
 // track关联响应式对象的属性和相应的effect进行关联
 export function track(target: any, type: number, key: string) {
-  console.log(target, key, activeEffect);
-  // 当前属性 依赖收集相关联的Effect
-  // activeEffect; // 当前触发的effect
+  if(!activeEffect) {
+    return;
+  }
+  let depsMap: any = weakMap.get(target)
+  // 该对象第一次进行依赖收集 创建一个相关Map对象 关联key和<Effect>Set
+  if(!depsMap) {
+    weakMap.set(target,(depsMap = new Map()))
+  }
+  let depSet: any = depsMap.get(key)
+  // 该对象下属性进行第一次依赖收集 进行赋值关联Effect
+  if(!depSet) {
+    depsMap.set(key, (depSet = new Set()))
+  }
+  // 关联对应的effect 同时注意set自身具有去重的性质
+  // effect(() => a = state.name;b=state.name) 所以去重 state.name仅仅关联一个相同的effect
+  depSet.add(activeEffect)
+  // console.log('收集完成依赖的Map',weakMap)
 }

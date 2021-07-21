@@ -43,6 +43,7 @@ function createGetter(isReadonly: boolean, isShallow: boolean) {
 // 赋值属性
 function createSetter(isShallow: boolean) {
   return function (target: object, key: string, value: any, receiver: any) {
+    // 当数据变化时候 通知对应属性的effect进行执行就可以了
     const res = Reflect.set(target, key, value, receiver);
     return res;
   };
