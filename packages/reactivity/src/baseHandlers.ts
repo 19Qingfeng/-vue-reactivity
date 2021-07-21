@@ -1,4 +1,6 @@
 import { extend, isPlainObject } from '@vue/share';
+import { track } from './effect';
+import { TrackOpTypes } from './opterations';
 import { reactive, readonly } from './reactive';
 
 // 实现代理劫持内容
@@ -18,6 +20,7 @@ function createGetter(isReadonly: boolean, isShallow: boolean) {
     const res = Reflect.get(target, key, receiver);
     if (!isReadonly) {
       // 非只读 一系列依赖收集功能
+      track(target, TrackOpTypes.GET, key);
     }
     if (isShallow) {
       // shallow 不需要内部进行递归监听

@@ -9,25 +9,39 @@
 </head>
 
 <body>
+  <div id='app'></div>
   <script src="../packages/reactivity/dist/reactivity.global.js">
 
   </script>
   <script>
-    const {
-      reactive,
-      readonly,
-      shallowReactive,
-      shallowReadonly
-    } = reactivity
-    const obj = {
-      value: '19Qingfeng',
-      outer: {
-        inner: 'wangHaoyu'
+    // const {
+    //   reactive,
+    //   readonly,
+    //   shallowReactive,
+    //   shallowReadonly,
+    //   effect
+    // } = reactivity
+    // const obj = {
+    //   value: '19Qingfeng',
+    //   outer: {
+    //     inner: 'wangHaoyu'
+    //   }
+    // }
+    // const obj1 = reactive(obj)
+    // effect(() => {
+    //   document.getElementById('app').innerHTML = obj1.value
+    // })
+
+    const proxy = new Proxy({
+      a: 1
+    }, {
+      get(target, key) {
+        console.log('访问' + key)
+        return target[key]
       }
-    }
-    const obj1 = shallowReadonly(obj)
-    obj1.outer = 1
-    console.log(obj1.outer, 'obj1')
+    })
+    console.log(proxy.a++)
+    console.log('1')
   </script>
 </body>
 
