@@ -53,7 +53,7 @@ export function createReactiveObject(
   // 防止所以进行相同对象的代理
   const existingProxy = proxyMap.get(target);
   if (existingProxy) {
-    return target;
+    return existingProxy;
   }
 
   // proxy API 仅仅代理对象的一层 嵌套对象需要递归处理 这也就是vue3的懒代理模式
