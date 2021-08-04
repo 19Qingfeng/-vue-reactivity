@@ -1,5 +1,5 @@
 export const isPlainObject = (param: any): param is object => {
-  return Object.prototype.toString.call(param) === '[object Object]';
+  return typeof param === 'object' && param !== null
 };
 
 export const extend = Object.assign;
