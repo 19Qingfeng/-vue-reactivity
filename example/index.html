@@ -28,15 +28,11 @@
       }
     }
     const obj1 = reactive(obj)
-    const obj2 = reactive(obj)
-    console.log(obj1,'obj1')
-    console.log(obj2,'obj2')
     effect(() => {
-      obj1.outer
       document.getElementById('app').innerHTML = obj1.outer.inner
     })
-    // console.log(obj1.outer.inner,'inner内容')
-    // console.log(obj1.outer.inner,'inner内容')
+
+    obj1.outer.inner = '修改数组的值'
   </script>
 </body>
 
