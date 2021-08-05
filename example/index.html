@@ -22,17 +22,18 @@
       effect
     } = reactivity
     const obj = {
-      value: '19Qingfeng',
-      outer: {
-        inner: [1, 2, 3]
-      }
+      outer: [1, 2, 3]
     }
     const obj1 = reactive(obj)
     effect(() => {
-      document.getElementById('app').innerHTML = obj1.outer.inner
+      document.getElementById('app').innerHTML = obj1.outer[0]
+      document.getElementById('app').innerHTML = obj1.outer[1]
+      document.getElementById('app').innerHTML = obj1.outer[2]
+      console.log('执行一遍')
+      console.log(obj1.outer,'this is outer')
     })
-
-    obj1.outer.inner = '修改数组的值'
+    // 下标未2的需要执行对应的依赖
+    obj1.outer.length = 2
   </script>
 </body>
 

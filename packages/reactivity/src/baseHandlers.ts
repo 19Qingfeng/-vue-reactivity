@@ -6,8 +6,8 @@ import {
   isInteger,
   isPlainObject,
 } from '@vue/share';
-import { track } from './effect';
-import { TrackOpTypes } from './opterations';
+import { track, trigger } from './effect';
+import { TrackOpTypes, TriggerOpTypes } from './opterations';
 import { reactive, readonly } from './reactive';
 
 // 实现代理劫持内容
@@ -52,18 +52,21 @@ function createSetter(isShallow: boolean) {
   return function (target, key, value: any, receiver: any) {
     const oldValue = target[key];
 
+    const result = Reflect.set(target, key, value, receiver);
+
     const hadKey =
       isArray(target) && isInteger(key)
         ? key < target.length
         : hasOwn(target, key);
 
+    // 触发更新
     if (!hadKey) {
-      // 表示新增
+      trigger(target, TriggerOpTypes.ADD, key, value);
     } else if (hasChanged(oldValue, value)) {
-      // 修改
+      trigger(target, TriggerOpTypes.SET, key, value, oldValue);
     }
 
-    return Reflect.set(target, key, value, receiver);
+    return result
   };
 }
 
