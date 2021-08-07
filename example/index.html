@@ -22,18 +22,17 @@
       effect
     } = reactivity
     const obj = {
-      outer: [1, 2, 3]
+      outer: '1'
     }
     const obj1 = reactive(obj)
     effect(() => {
-      document.getElementById('app').innerHTML = obj1.outer[0]
-      document.getElementById('app').innerHTML = obj1.outer[1]
-      document.getElementById('app').innerHTML = obj1.outer[2]
-      console.log('执行一遍')
-      console.log(obj1.outer,'this is outer')
+      // 第一次是3 2秒后变成undefined
+      document.getElementById('app').innerHTML = obj1
     })
     // 下标未2的需要执行对应的依赖
-    obj1.outer.length = 2
+    setTimeout(() => {
+      obj1.outer1 = '你好'
+    }, 2000)
   </script>
 </body>
 

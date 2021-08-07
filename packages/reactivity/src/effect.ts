@@ -1,4 +1,5 @@
-import { isArray } from '@vue/share';
+import { isArray, isInteger } from '@vue/share';
+import { TriggerOpTypes } from './opterations';
 
 interface EffectOptions {
   lazy?: boolean;
@@ -99,14 +100,36 @@ export function trigger(target, type, key?, newValue?, oldValue?) {
   }
   const effects = new Set();
   // 如果target是一个数组 并且修改的是长度
+
   if (isArray(target) && key === 'length') {
     depEffect.forEach((dep, key) => {
-      if (key >= newValue) {
+      if (key === 'length' || key > newValue) {
         add(dep, effects);
       }
     });
   } else {
-    // 直接就修改然后触发对应effect进行执行
+    // 存在收集的依赖就添加进去
+    if (key !== undefined) {
+      // 如果之前对一个整体对象进行过收集依赖 那么在对这个对象进行新增属性
+      // 这个时候depEffect.get(key)是会报错的 所以有问题 需要结合源码去看
+      // Symbol.toPrimitive
+      // 但是对象会报错 depEffect.get(key)并没有这个值
+      add(depEffect.get(key), effects);
+    }
+    switch (type) {
+      case TriggerOpTypes.ADD:
+        if (isArray(target) && isInteger(key)) {
+          // 处理数组新增 大索引 同时也需要更新
+          // 这里之所以取length 是因为 比如 
+          // document.getElementById('app') = obj.arr
+          // 依赖手机的时候递归到obj.arr是一个arr，此时会调用数组的Symbol(Symbol.toPrimitive) 会依次调用 
+          // 得去ES6中查询 Symbol.toPrimitive 忘记了这个东西
+          // new index added to array -> length changes
+          add(depEffect.get('length'), effects);
+        }
+        break;
+    }
   }
+  console.log(key, effects);
   effects.forEach((effect: any) => effect());
 }

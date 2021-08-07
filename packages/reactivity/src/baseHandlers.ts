@@ -24,6 +24,7 @@ const shallowSet = createSetter(true);
 // 获取拦截
 function createGetter(isReadonly: boolean, isShallow: boolean) {
   return function (target: object, key: string, receiver: any) {
+    debugger
     const res = Reflect.get(target, key, receiver);
     if (!isReadonly) {
       // 非只读 一系列依赖收集功能
@@ -52,12 +53,13 @@ function createSetter(isShallow: boolean) {
   return function (target, key, value: any, receiver: any) {
     const oldValue = target[key];
 
-    const result = Reflect.set(target, key, value, receiver);
-
     const hadKey =
       isArray(target) && isInteger(key)
         ? key < target.length
         : hasOwn(target, key);
+
+    // 修改值
+    const result = Reflect.set(target, key, value, receiver);
 
     // 触发更新
     if (!hadKey) {
@@ -66,7 +68,7 @@ function createSetter(isShallow: boolean) {
       trigger(target, TriggerOpTypes.SET, key, value, oldValue);
     }
 
-    return result
+    return result;
   };
 }
 
