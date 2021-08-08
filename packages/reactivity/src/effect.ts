@@ -120,9 +120,9 @@ export function trigger(target, type, key?, newValue?, oldValue?) {
       case TriggerOpTypes.ADD:
         if (isArray(target) && isInteger(key)) {
           // 处理数组新增 大索引 同时也需要更新
-          // 这里之所以取length 是因为 比如 
+          // 这里之所以取length 是因为 比如
           // document.getElementById('app') = obj.arr
-          // 依赖手机的时候递归到obj.arr是一个arr，此时会调用数组的Symbol(Symbol.toPrimitive) 会依次调用 
+          // 依赖手机的时候递归到obj.arr是一个arr，此时会调用数组的Symbol(Symbol.toPrimitive) 会调用toString toString就会调用数组的length以及数组当前的每一项索引
           // 得去ES6中查询 Symbol.toPrimitive 忘记了这个东西
           // new index added to array -> length changes
           add(depEffect.get('length'), effects);
