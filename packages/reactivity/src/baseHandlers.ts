@@ -24,6 +24,7 @@ const shallowSet = createSetter(true);
 // 获取拦截
 function createGetter(isReadonly: boolean, isShallow: boolean) {
   return function (target: object, key: string, receiver: any) {
+    console.log(key, '触发getter');
     // debugger
     const res = Reflect.get(target, key, receiver);
     if (!isReadonly) {

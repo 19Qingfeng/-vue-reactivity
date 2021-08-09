@@ -4,5 +4,5 @@ export {
   readonly,
   reactive,
 } from './reactive';
-export { ref, shallowRef } from './ref';
+export { ref, shallowRef, toRef } from './ref';
 export { effect } from './effect';

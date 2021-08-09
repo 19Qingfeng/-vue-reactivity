@@ -27,11 +27,28 @@ class RefImpl {
   }
 }
 
+// 这里需要明确的是toRef 原始对象如果是非响应式的那么返回的就是非响应式
+// 如果是响应式的 那么触发get 就会触发原始proxy对象的get 触发set就会触发原始对象`响应式`对象的set
+// 本质上toRef 就是基于原始对象的包装 通过.value访问到原始对象的值。如果原始对象是响应式那么就会触发更新 原始对象不是响应式 那么就不会触发更新
+class ObjectRefImpl {
+  public __v_isRef = true;
+
+  constructor(private _object, private _key) {}
+
+  get value() {
+    return this._object[this._key];
+  }
+
+  set value(newValue) {
+    this._object[this._key] = newValue;
+  }
+}
+
 // vue中高阶函数使用的真的多呀
 
 // ref一层使用的类的属性访问器(本质上还是Object.defineProperty)
 // 所以ref和reactive的响应式实现本质是不同的
-// ref一层是基于Object.defaultPrototype，而reactive内部是基于Proxy
+// ref一层是基于Object.definePrototype，而reactive内部是基于Proxy
 export function ref(value) {
   return createRef(value, false);
 }
@@ -42,4 +59,9 @@ export function shallowRef(value) {
 
 function createRef(value, isShallow) {
   return new RefImpl(value, isShallow);
+}
+
+// toRef/toRefs
+export function toRef(target, key) {
+  return new ObjectRefImpl(target, key);
 }

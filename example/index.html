@@ -22,17 +22,17 @@
       effect
     } = reactivity
     const obj = {
-      outer: [1, 2, 3]
+      name: '1'
     }
     const obj1 = reactive(obj)
+    // 这里的解构触发了getter 但是effect是空啊。。。
+    const {
+      name
+    } = obj1
     effect(() => {
-      const a = obj1.outer
-      console.log(a,'this is a')
+      // 这里并不会触发proxy的getter啊 他就是一个普通字符串。。
+      app.innerHTML = name
     })
-    // 下标未2的需要执行对应的依赖
-    setTimeout(() => {
-      obj1.outer1[5] = '1'
-    }, 2000)
   </script>
 </body>
 
