@@ -80,6 +80,9 @@ export function track(target: any, type: number, key: string) {
 }
 
 function add(depList, effectList) {
+  if (!depList) {
+    return;
+  }
   depList.forEach((value) => {
     effectList.add(value);
   });
