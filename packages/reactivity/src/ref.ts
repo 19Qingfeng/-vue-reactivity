@@ -1,4 +1,4 @@
-import { hasChanged, isPlainObject } from '@vue/share';
+import { hasChanged, isArray, isPlainObject } from '@vue/share';
 import { track, trigger } from './effect';
 import { TrackOpTypes, TriggerOpTypes } from './opterations';
 import { reactive } from './reactive';
@@ -62,6 +62,21 @@ function createRef(value, isShallow) {
 }
 
 // toRef/toRefs
+// toRef/toRefs 上边代码注释过 他们转化实际就是和原本传入对象息息相关
+// 传入对象是一个响应式对象 那么转化后的结果就是响应式
+// 如果传入对象是一个普通对象 那么转化后的同样也是普通对象
+// 对与toRef/toRefs的所有操作都会影响到原本对象 本质上它就外层封装了一个对象 通过.value去访问原有对象的key
+// 之所以这么做 是因为希望在结构后，再次访问的使用可以正常的触发响应式对象的getter
 export function toRef(target, key) {
   return new ObjectRefImpl(target, key);
+}
+
+export function toRefs(target) {
+  const result = isArray(target)
+    ? new Array(target.length)
+    : Object.create(null);
+  for (let key in target) {
+    result[key] = toRef(target, key);
+  }
+  return result;
 }

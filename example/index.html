@@ -22,7 +22,9 @@
       effect
     } = reactivity
     const obj = {
-      name: '1'
+      name: {
+        first: 'wang'
+      }
     }
     const obj1 = reactive(obj)
     // 这里的解构触发了getter 但是effect是空啊。。。
@@ -31,8 +33,12 @@
     } = obj1
     effect(() => {
       // 这里并不会触发proxy的getter啊 他就是一个普通字符串。。
-      app.innerHTML = name
+      app.innerHTML = name.first
     })
+    // 这里应该更新 因为引用类型 还是收集了name 但是这是隐藏问题 不要这么使用
+    setTimeout(() => {
+      name.first = 'haoyu'
+    }, 2000)
   </script>
 </body>
 
